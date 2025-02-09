@@ -1,4 +1,3 @@
-import { AuthLayout } from "@/components/templates/AuthLayout";
 import styles from "./page.module.css";
 import LoginPage from "@/components/pages/Login";
 

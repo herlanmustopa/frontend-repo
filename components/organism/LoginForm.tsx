@@ -18,7 +18,7 @@ export const LoginForm = () => {
       <Typography text="Login" variant="h3" />
       <InputField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <InputField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Button label="Login" onClick={handleLogin} />
+      <Button label="Login 2" onClick={handleLogin} />
     </div>
   );
 };
