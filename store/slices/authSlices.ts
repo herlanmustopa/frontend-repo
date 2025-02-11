@@ -1,52 +1,74 @@
-"use client"; 
+"use client";
 
-import { authClient } from "@/config/firebaseConfig";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { loginWithEmail, refreshAuthToken } from "@/apis/authService";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  profilePicture?: string;
+}
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  refreshToken: string | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: AuthState = {
+  user: null,
+  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+  refreshToken: typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null,
+  loading: false,
+  error: null,
+};
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(authClient, email, password);
-      const idToken = await userCredential.user.getIdToken();
-
-      const response = await fetch("http://localhost:3300/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Login failed!");
-      }
-
-      const data = await response.json();
+      const data = await loginWithEmail(email, password);
       localStorage.setItem("token", data.token);
-
+      localStorage.setItem("refreshToken", data.refreshToken);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue("An unknown error occurred");
+      return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
+    }
+  }
+);
+
+export const refreshUserToken = createAsyncThunk(
+  "auth/refreshToken",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as { auth: AuthState };
+      if (!state.auth.refreshToken) throw new Error("No refresh token available");
+
+      const data = await refreshAuthToken(state.auth.refreshToken);
+      localStorage.setItem("token", data.token);
+      return data.token;
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Failed to refresh token");
     }
   }
 );
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: null,
-    token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
-    loading: false,
-    error: null as string | null,
-  },
+  initialState,
   reducers: {
+    loginSuccess: (state, action: PayloadAction<{ user: User; token: string }>) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+    },
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.refreshToken = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
     },
   },
   extraReducers: (builder) => {
@@ -55,17 +77,27 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ user: User; token: string; refreshToken: string }>) => {
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        state.refreshToken = action.payload.refreshToken;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string; // ✅ Pastikan error memiliki tipe string
+        state.error = action.payload as string;
+      })
+      .addCase(refreshUserToken.fulfilled, (state, action) => {
+        state.token = action.payload;
+      })
+      .addCase(refreshUserToken.rejected, (state) => {
+        state.token = null;
+        state.refreshToken = null;
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, loginSuccess } = authSlice.actions;
 export default authSlice.reducer;
