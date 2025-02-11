@@ -1,13 +1,11 @@
-import styles from "./page.module.css";
-import LoginPage from "@/components/pages/Login";
+// import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-     <LoginPage/>
+    <div>
+      <main >
       </main>
-      <footer className={styles.footer}>
+      <footer>
       </footer>
     </div>
   );

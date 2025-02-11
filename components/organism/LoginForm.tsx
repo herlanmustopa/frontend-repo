@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Button } from "../atoms/Button";
 import { InputField } from "../molecules/InputField";
 import { Typography } from "../atoms/Typography";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { loginUser } from "@/store/slices/authSlices";
+import { RootState } from "@/store/store";
+import { useAppDispatch } from "@/store/hooks";
 
 export const LoginForm = () => {
-  const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
