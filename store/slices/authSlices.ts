@@ -1,6 +1,6 @@
 "use client";
 
-import { loginWithEmail, refreshAuthToken } from "@/apis/authService";
+import { loginWithEmail, refreshAuthToken, registerUser } from "@/apis/authService";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 interface User {
   id: string;
@@ -15,6 +15,7 @@ interface AuthState {
   refreshToken: string | null;
   loading: boolean;
   error: string | null;
+  successMessage: string | null;
 }
 
 const initialState: AuthState = {
@@ -23,6 +24,7 @@ const initialState: AuthState = {
   refreshToken: typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null,
   loading: false,
   error: null,
+  successMessage: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -54,6 +56,18 @@ export const refreshUserToken = createAsyncThunk(
     }
   }
 );
+
+export const registerUserThunk = createAsyncThunk(
+    "auth/registerUser",
+    async ({ name, email, password }: { name: string; email: string; password: string }, { rejectWithValue }) => {
+      try {
+        return await registerUser({ name, email, password });
+      } catch (error) {
+        return rejectWithValue(error instanceof Error ? error.message : "Failed to register user");
+      }
+    }
+  );
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -95,6 +109,19 @@ const authSlice = createSlice({
         state.refreshToken = null;
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
+      })
+      .addCase(registerUserThunk.pending, (state) => {
+        state.loading = true;
+        state.successMessage = null;
+        state.error = null;
+      })
+      .addCase(registerUserThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.successMessage = "User registered successfully!";
+      })
+      .addCase(registerUserThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
