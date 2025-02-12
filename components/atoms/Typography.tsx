@@ -6,5 +6,5 @@ interface TypographyProps {
 }
 
 export const Typography = ({ text, variant = "body1" }: TypographyProps) => {
-  return <MUITypography variant={variant}>{text}</MUITypography>;
+  return <MUITypography variant={variant} className="text-2xl font-bold text-gray-700">{text}</MUITypography>;
 };

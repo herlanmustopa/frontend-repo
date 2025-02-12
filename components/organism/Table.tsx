@@ -18,7 +18,7 @@ import { getUsers, setSelectedUser, User } from "@/store/slices/userSilces";
 import { RootState } from "@/store/store";
 import EditDialog from "../molecules/Dialog";
 
-export default function UserTable() {
+export default function Tables() {
   const dispatch = useAppDispatch();
   const { users, loading, error } = useAppSelector((state: RootState) => state.users);
   const [open, setOpen] = useState(false);
