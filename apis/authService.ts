@@ -21,7 +21,6 @@ export const loginWithEmail = async (email: string, password: string) => {
         id: userCredential.user.uid,
         name: userCredential.user.displayName || "Anonymous",
         email: userCredential.user.email || "",
-        profilePicture: userCredential.user.photoURL || "",
       },
       token: data.token,
       refreshToken: data.refreshToken,

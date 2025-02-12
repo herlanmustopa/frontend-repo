@@ -1,7 +1,7 @@
-import { fetchUsers } from "@/apis/userService";
+import { fetchUsers, getUserById, updateUser } from "@/apis/userService";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -9,13 +9,15 @@ interface User {
 }
 
 interface UserState {
-  users: User[];
+  users: User[]; 
+  selectedUser: User | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: UserState = {
   users: [],
+  selectedUser: null,
   loading: false,
   error: null,
 };
@@ -29,10 +31,36 @@ export const getUsers = createAsyncThunk("users/getUsers", async (_, { rejectWit
   }
 });
 
+export const getIdUser = createAsyncThunk(
+  "users/getUserById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await getUserById(id);
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Failed to fetch user");
+    }
+  }
+);
+
+export const updateUsers = createAsyncThunk(
+  "users/updateUser",
+  async ({ id, name, email }: { id: string; name: string; email: string }, { rejectWithValue }) => {
+    try {
+      return await updateUser({ id, name, email });
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Failed to update user");
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedUser: (state, action: PayloadAction<User | null>) => {
+      state.selectedUser = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUsers.pending, (state) => {
@@ -46,8 +74,22 @@ const userSlice = createSlice({
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(updateUsers.fulfilled, (state, action: PayloadAction<User>) => {
+        const index = state.users.findIndex((user) => user.id === action.payload.id);
+        if (index !== -1) {
+          state.users[index] = action.payload;
+        }
+        state.selectedUser = action.payload; 
+      })
+      .addCase(updateUsers.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(getIdUser.fulfilled, (state, action: PayloadAction<User>) => {
+        state.selectedUser = action.payload;
+      })
   },
 });
 
+export const { setSelectedUser } = userSlice.actions;
 export default userSlice.reducer;
