@@ -12,9 +12,6 @@ const  DashboardPage = () => {
         <Typography variant="h4" gutterBottom>
           Welcome, {user?.name || "User"}!
         </Typography>
-        <Typography variant="body1">
-          This is your dashboard where you can manage your account.
-        </Typography>
         <Table />
       </Container>
   );
