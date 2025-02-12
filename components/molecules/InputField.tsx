@@ -8,5 +8,5 @@ interface InputFieldProps {
 }
 
 export const InputField = ({ label, type = "text", value, onChange }: InputFieldProps) => {
-  return <TextField label={label} type={type} value={value} onChange={onChange} className="w-full" fullWidth />;
+  return <TextField label={label} type={type} value={value} onChange={onChange} className="w-full" sx={{marginBottom: "16px"}} fullWidth />;
 };

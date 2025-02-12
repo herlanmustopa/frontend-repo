@@ -1,21 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, TextField, Typography, Paper } from "@mui/material";
+import { Button, Typography, Paper } from "@mui/material";
 import { loginUser } from "@/store/slices/authSlices";
 import { RootState } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
 import { styled } from "@mui/system";
-
-// const LoginContainer = styled(Box)({
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-//   minHeight: "100vh",
-//   background: "linear-gradient(to right, #4A90E2, #8E44AD)", 
-//   padding: "16px",
-// });
+import { InputField } from "../molecules/InputField";
 
 const LoginBox = styled(Paper)({
   maxWidth: "400px",
@@ -60,25 +52,9 @@ export const LoginForm = () => {
           Login
         </Typography>
 
-        <TextField
-          label="Email"
-          type="email"
-          variant="outlined"
-          fullWidth
-          sx={{ marginBottom: "16px" }}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <InputField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
 
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          sx={{ marginBottom: "16px" }}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <InputField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
         <StyledButton fullWidth variant="contained" onClick={handleLogin} disabled={loading}>
           {loading ? "Logging in..." : "Login"}
