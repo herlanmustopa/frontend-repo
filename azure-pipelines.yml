@@ -9,13 +9,15 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+- stage: deploy
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy Web App
+    pool:
+      vmImage: 'Ubuntu-latest'
+    environment: 'Development'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo Hello world securing your environments!
