@@ -15,7 +15,7 @@ export default function Sidebar() {
     >
       <List>
         <SidebarMenu label="Dashboard" path="/dashboard" />
-        <SidebarMenu label="Settings" path="/dashboard/settings" />
+        {/* <SidebarMenu label="Settings" path="/dashboard/settings" /> */}
       </List>
     </Drawer>
   );

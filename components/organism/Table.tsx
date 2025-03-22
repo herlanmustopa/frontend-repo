@@ -20,14 +20,6 @@ import { RootState } from "@/store/store";
 import EditDialog from "../molecules/Dialog";
 import { styled } from "@mui/system";
 
-// const TableWrapper = styled(Box)({
-//   width: "100%",
-//   padding: "16px",
-//   display: "flex",
-//   justifyContent: "center",
-  
-// });
-
 const StyledContainer = styled(Box)({
   maxWidth: "100%",
   overflowX: "auto",
@@ -142,6 +134,5 @@ export default function Tables() {
 
         <EditDialog open={open} onClose={() => setOpen(false)} />
       </StyledContainer>
-    // {/* </TableWrapper> */}
   );
 }

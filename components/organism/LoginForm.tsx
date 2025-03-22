@@ -15,7 +15,7 @@ const LoginBox = styled(Paper)({
   padding: "32px",
   textAlign: "center",
   borderRadius: "12px",
-  boxShadow: "0px 4px 10px rgba(0,0,0,0.2)", 
+  boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
   backgroundColor: "white",
 });
 
@@ -59,6 +59,10 @@ export const LoginForm = () => {
         <StyledButton fullWidth variant="contained" onClick={handleLogin} disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </StyledButton>
+        <Typography sx={{ marginTop: "12px", cursor: "pointer", color: "#4A90E2" }} onClick={() => router.push("/register")}>
+          Not have have an account? Register
+        </Typography>
+
 
         {error && <Typography color="error" sx={{ marginTop: "10px" }}>{error}</Typography>}
       </LoginBox>
