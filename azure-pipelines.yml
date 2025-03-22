@@ -9,15 +9,17 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+stages:
 - stage: deploy
   jobs:
   - deployment: DeployWeb
     displayName: Deploy Web App
     pool:
-      vmImage: 'Ubuntu-latest'
+      vmImage: 'ubuntu-latest'
     environment: 'Development'
     strategy:
       runOnce:
         deploy:
           steps:
           - script: echo Hello world securing your environments!
+            displayName: 'Run a one-line script'
