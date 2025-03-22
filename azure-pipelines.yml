@@ -9,7 +9,3 @@ stages:
     variables:
     - name: Secure
       value: 'Secret!'
-    steps:
-    - template: '../.secure/secure-template.yaml'
-      parameters:
-        message: 'This is from the main template!'
