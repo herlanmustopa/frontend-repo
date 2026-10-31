@@ -1,0 +1,11 @@
+name: 'Pipeline templates'
+stages:
+- stage: Build
+  displayName: 'Securing pipelines with templates'
+  jobs:
+  - job: Build
+    pool:
+      vmImage: windows-latest
+    variables:
+    - name: Secure
+      value: 'Secret!'

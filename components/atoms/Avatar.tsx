@@ -2,9 +2,10 @@
 
 import { Avatar } from "@mui/material";
 import { useAppSelector } from "@/store/hooks";
+import { RootState } from "@/store/store";
 
 export default function AvatarComponent() {
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state: RootState) => state.auth.user);
 
   if (!user) return <Avatar />;
 
